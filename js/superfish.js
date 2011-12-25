@@ -16,6 +16,7 @@
 	var sf = {};
 	sf.c = {
 		menuClass   : 'sf-js-enabled',
+		subClass		: 'sf-sub-indicator',
 		anchorClass : 'sf-with-ul'
 	};
 	sf.defaults = {
@@ -30,7 +31,7 @@
 		speedIn		: 'normal',
 		speedOut	: 'normal',
 		autoArrows	: true,
-		arrow		: '<span class="sf-sub-indicator">&#187;</span>',//Markup to use for sub-menu indicators
+		arrow		: '<span class="'+sf.c.subClass+'">&#187;</span>',//Markup to use for sub-menu indicators
 		disableHI	: false,		// true disables hoverIntent detection
 		//All Callbacks are passed the current superfish instance as an argument
 		onInit		: function(){}, // Called on init, after plugin data initialized
@@ -56,12 +57,8 @@
 				return this.each(function() {
 					//Set up local variables
 					var _ = $(this),
-					o = $.extend({},sf.defaults,opts),
 					//Namespace instance data
 					data = _.data('superfish');
-					//Parse jquery strings for out speed
-					if (typeof(o.speedOut) === 'string') o.speedOut = 600;
-					if ($.browser.msie && (parseInt($.browser.version) <= 6)) return;//Degrade to CSS menus for IE6
 					if (! data ) {
 						//Initialize data
 						var lis = _.find('li'); //Get all instance LI's
@@ -80,6 +77,12 @@
 						console.warn('superfish already initialized on',this);
 						return this;
 					}
+					//Prepare Options
+					o = $.extend({},sf.defaults,opts),
+					data.initialized = true;
+					//Parse jquery strings for out speed
+					if (typeof(o.speedOut) === 'string') o.speedOut = 600;
+					if ($.browser.msie && (parseInt($.browser.version) <= 6)) return;//Degrade to CSS menus for IE6
 					//make sure passed in element actually has submenus
 					if (data.uls.length == 0 ) {
 						console.log('no ul\'s found on parent menu item, exiting');
@@ -140,7 +143,6 @@
 						$('li.'+o.pathClass,_).slice(0,o.pathLevels)
 					}
 					o.onAfterInit.call(null,_);
-					data.initialized = true;
 				})//End jQuery.each
 			},//END INIT METHOD
 	}//End Methods
