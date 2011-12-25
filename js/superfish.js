@@ -74,7 +74,7 @@
 					//Sanity Checks
 					//Check if jQuery.superfish has already been intitialized
 					if (data.initialized) {
-						console.warn('superfish already initialized on',this);
+						if (typeof(console) != 'undefined') console.warn('superfish already initialized on',this);
 						return this;
 					}
 					//Prepare Options
