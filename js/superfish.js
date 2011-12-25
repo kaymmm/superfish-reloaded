@@ -94,7 +94,7 @@
 					o.onInit.call(null,_);
 					//Add Arrows
 					if (o.autoArrows) {
-						$('li:has(ul)',_).addClass(sf.c.anchorClass).append(o.arrow);
+						$('li:has(ul)',_).addClass(sf.c.anchorClass).children('A').append(o.arrow);
 					}
 					//Set all UL's to hidden
 					data.uls.hide();
