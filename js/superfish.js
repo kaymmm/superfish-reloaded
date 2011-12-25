@@ -102,7 +102,7 @@
 						//this is the event target, <a href="#"/>
 						var $this = $(this),
 						$li = $this.parent('li')
-						$next = $this.next('ul');
+						$next = $li.children('UL').first();
 						if (e.type == 'mouseenter') {
 							//Clear Timeout
 							clearTimeout(data.timer);
