@@ -72,3 +72,7 @@ v1.4.7		added back in the visibility toggle that was removed in 1.4.5 as the bug
 			
 v1.4.8		fix over-sight: using 32bit png meant that the shadow image did show in IE6. Rather than go back to 8bit, add code to exclude IE6 from getting shadow class.
 			use new folder structure recommended by Matt from TopicTrack, for easier updates.
+
+
+v1.5		Major Overhaul. Removed jQuery namespace cluttering ($.hideSuperfishUI,$.showSuperfishUI)
+			Removed PNG drop shadow support in favor of CCS3 Drop shadows
