@@ -67,6 +67,7 @@
 						var uls = lis.find('ul'); //Get all instance UL's
 						_.data('superfish', {
 							//Set namaspaced instance data
+							target: _,
 							timer: null,
 							uls : uls, //Save all child UL dom nodes
 							lis: lis,
@@ -95,7 +96,7 @@
 					o.onInit.call(null,_);
 					//Add Arrows
 					if (o.autoArrows) {
-						$('li:has(ul)',_).addClass(sf.c.anchorClass).children('A').append(o.arrow);
+						$('li:has(ul)',data.target).addClass(sf.c.anchorClass).children('A').append(o.arrow);
 					}
 					//Set all UL's to hidden
 					data.uls.hide();
@@ -152,6 +153,23 @@
 					data.uls.hide();
 					data.lis.removeClass(o.hoverClass);
 				}, o.speedOut);			
+			},
+			destroy: function  () {
+				if ($(this).data('superfish')) {
+					var data = $(this).data('superfish'),
+					o = data.options;
+					data.target.removeClass(sf.c.menuClass);
+					data.uls.removeAttr('style');
+					if (o.autoArrows) {
+						$('li:has(ul)',data.target).removeClass(sf.c.anchorClass)
+						$("."+sf.c.subClass,data.target).remove();
+					}
+					data.lis.undelegate('a','mouseenter mouseleave');
+					$(this).removeData('superfish');
+				} else {
+					if (typeof(console) !== "undefined") console.warn('Superfish not initialized on that dom element')
+				}
+				
 			}
 	}//End Methods
 })(jQuery);
