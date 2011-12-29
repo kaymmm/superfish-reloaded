@@ -26,8 +26,8 @@
 		delay		: 700,
 		animIn		: {opacity:'show'},//What animation object to use to show the submenus
 		animOut		: {opacity:'hide'},//  "	"		   "	"  "  "	 hide  "     "
-		easeIn		: "jswing",
-		easeOut		: "jswing",
+		easeIn		: "swing",
+		easeOut		: "swing",
 		speedIn		: 'normal',
 		speedOut	: 'normal',
 		autoArrows	: true,
@@ -58,7 +58,9 @@
 					//Set up local variables
 					var _ = $(this),
 					//Namespace instance data
-					data = _.data('superfish');
+					data = _.data('superfish'),
+					o = $.extend({},sf.defaults,opts);
+					
 					if (! data ) {
 						//Initialize data
 						var lis = _.find('li'); //Get all instance LI's
@@ -67,7 +69,8 @@
 							//Set namaspaced instance data
 							timer: null,
 							uls : uls, //Save all child UL dom nodes
-							lis: lis
+							lis: lis,
+							options: o
 						})
 						data = _.data('superfish');//make it easy for the rest of init()
 					}
@@ -77,15 +80,13 @@
 						if (typeof(console) != 'undefined') console.warn('superfish already initialized on',this);
 						return this;
 					}
-					//Prepare Options
-					o = $.extend({},sf.defaults,opts),
 					data.initialized = true;
 					//Parse jquery strings for out speed
 					if (typeof(o.speedOut) === 'string') o.speedOut = 600;
 					if ($.browser.msie && (parseInt($.browser.version) <= 6)) return;//Degrade to CSS menus for IE6
 					//make sure passed in element actually has submenus
 					if (data.uls.length == 0 ) {
-						console.log('no ul\'s found on parent menu item, exiting');
+						if (typeof(console) != 'undefined') console.warn('no ul\'s found on parent menu item, exiting');
 						return this;
 					}
 					//Add root menu CSS class
@@ -119,15 +120,7 @@
 							}
 						} else if (e.type == "mouseleave") {
 							data.timer = setTimeout(function(){
-								o.onBeforeHide.call(null,_);
-								data.uls.animate(o.animOut,o.speedOut,o.easeOut, function(){
-									o.onHide.call(null,_);
-								});
-								//Second timeout to run after animation is complete
-								var anon = setTimeout( function  () {
-									data.uls.hide();
-									data.lis.removeClass(o.hoverClass);
-								}, o.speedOut);					
+								methods.close(_);
 							},o.delay);	
 							
 						} else {
@@ -145,5 +138,20 @@
 					o.onAfterInit.call(null,_);
 				})//End jQuery.each
 			},//END INIT METHOD
+			close: function  (elem) {
+				//Handle API invoked method
+				if (typeof(elem) == "undefined") var elem = $(this);
+				var data  = elem.data('superfish'),
+				o = data.options;
+				o.onBeforeHide.call(null,elem);
+				data.uls.animate(o.animOut,o.speedOut,o.easeOut, function(){
+					o.onHide.call(null,$(this));
+				});
+				//Second timeout to run after animation is complete
+				setTimeout( function  () {
+					data.uls.hide();
+					data.lis.removeClass(o.hoverClass);
+				}, o.speedOut);			
+			}
 	}//End Methods
 })(jQuery);
