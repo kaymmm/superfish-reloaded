@@ -142,33 +142,37 @@
 			close: function  (elem) {
 				//Handle API invoked method
 				if (typeof(elem) == "undefined") var elem = $(this);
-				var data  = elem.data('superfish'),
-				o = data.options;
-				o.onBeforeHide.call(null,elem);
-				data.uls.animate(o.animOut,o.speedOut,o.easeOut, function(){
-					o.onHide.call(null,$(this));
-				});
-				//Second timeout to run after animation is complete
-				setTimeout( function  () {
-					data.uls.hide();
-					data.lis.removeClass(o.hoverClass);
-				}, o.speedOut);			
+				return elem.each( function  () {
+					var data  = elem.data('superfish'),
+					o = data.options;
+					o.onBeforeHide.call(null,elem);
+					data.uls.animate(o.animOut,o.speedOut,o.easeOut, function(){
+						o.onHide.call(null,$(this));
+					});
+					//Second timeout to run after animation is complete
+					setTimeout( function  () {
+						data.uls.hide();
+						data.lis.removeClass(o.hoverClass);
+					}, o.speedOut);			
+				})
 			},
 			destroy: function  () {
-				if ($(this).data('superfish')) {
-					var data = $(this).data('superfish'),
-					o = data.options;
-					data.target.removeClass(sf.c.menuClass);
-					data.uls.removeAttr('style');
-					if (o.autoArrows) {
-						$('li:has(ul)',data.target).removeClass(sf.c.anchorClass)
-						$("."+sf.c.subClass,data.target).remove();
+				return this.each( function  () {
+					if ($(this).data('superfish')) {
+						var data = $(this).data('superfish'),
+						o = data.options;
+						data.target.removeClass(sf.c.menuClass);
+						data.uls.removeAttr('style');
+						if (o.autoArrows) {
+							$('li:has(ul)',data.target).removeClass(sf.c.anchorClass)
+							$("."+sf.c.subClass,data.target).remove();
+						}
+						data.lis.undelegate('a','mouseenter mouseleave');
+						$(this).removeData('superfish');
+					} else {
+						if (typeof(console) !== "undefined") console.warn('Superfish not initialized on that dom element')
 					}
-					data.lis.undelegate('a','mouseenter mouseleave');
-					$(this).removeData('superfish');
-				} else {
-					if (typeof(console) !== "undefined") console.warn('Superfish not initialized on that dom element')
-				}
+				})
 				
 			}
 	}//End Methods
