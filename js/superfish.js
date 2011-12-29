@@ -26,8 +26,8 @@
 		delay		: 700,
 		animIn		: {opacity:'show'},//What animation object to use to show the submenus
 		animOut		: {opacity:'hide'},//  "	"		   "	"  "  "	 hide  "     "
-		easeIn		: "swing",
-		easeOut		: "swing",
+		easeIn		: "jswing",
+		easeOut		: "jswing",
 		speedIn		: 'normal',
 		speedOut	: 'normal',
 		autoArrows	: true,
