@@ -2,7 +2,6 @@
 /*
  * Superfish v1.5 - jQuery menu widget
  * Copyright (c) 2012 Bob Gregor
- * Copyright (c) 2008 Joel Birch
  *
  * Dual licensed under the MIT and GPL licenses:
  * 	http://www.opensource.org/licenses/mit-license.php
@@ -12,7 +11,7 @@
  */
 
 ;(function($){
-	//Set up global SF object
+	//Set up local instance with defaults
 	var sf = {};
 	sf.c = {
 		menuClass   : 'sf-js-enabled',
@@ -41,25 +40,24 @@
 		onBeforeHide: function(){},
 		onHide		: function(){}
 	};
+	// Method calling logic
 	$.fn.superfish = function(method) {
-		// Method calling logic
-	    if ( methods[method] ) {
-	      return methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
+	    if ( sf.methods[method] ) {
+	      return sf.methods[ method ].apply( this, Array.prototype.slice.call( arguments, 1 ));
 	    } else if ( typeof method === 'object' || ! method ) {
-	      return methods.init.apply( this, arguments );
+	      return sf.methods.init.apply( this, arguments );
 	    } else {
 	      $.error( 'Method ' +  method + ' does not exist on jQuery.superfish' );
 	    }
 	};
-	/*****************************END jQuery Plugin **********/
-	var methods = {
+	sf.methods = {
 			init: function  (opts) {
 				return this.each(function() {
 					//Set up local variables
 					var _ = $(this),
 					//Namespace instance data
 					data = _.data('superfish'),
-					o = $.extend({},sf.defaults,opts);
+					o = $.extend({}, sf.defaults, opts);
 					
 					if (! data ) {
 						//Initialize data
@@ -72,7 +70,7 @@
 							uls : uls, //Save all child UL dom nodes
 							lis: lis,
 							options: o
-						})
+						});
 						data = _.data('superfish');//make it easy for the rest of init()
 					}
 					//Sanity Checks
@@ -91,7 +89,7 @@
 						return this;
 					}
 					//Add root menu CSS class
-					_.addClass(sf.c.menuClass)
+					_.addClass(sf.c.menuClass);
 					//Call onInit Callback
 					o.onInit.call(null,_);
 					//Add Arrows
@@ -103,7 +101,7 @@
 					data.lis.delegate('a','mouseenter mouseleave', function  (e) {
 						//this is the event target, <a href="#"/>
 						var $this = $(this),
-						$li = $this.parent('li')
+						$li = $this.parent('li');
 						$next = $li.children('UL').first();
 						if (e.type == 'mouseenter') {
 							//Clear Timeout
@@ -117,15 +115,14 @@
 								o.onBeforeShow.call(null,$next); 
 								$next.animate(o.animIn,o.speedIn,o.easeIn, function(){ 
 									o.onShow.call(null,$next); 
-								})
+								});
 							}
 						} else if (e.type == "mouseleave") {
 							data.timer = setTimeout(function(){
-								methods.close(_);
+								sf.methods.close(_);
 							},o.delay);	
-							
 						} else {
-							console.warn(' $(this), event.type', $(this), e.type)
+							console.warn(' $(this), event.type', $(this), e.type);
 						}
 						e.preventDefault();
 						e.stopPropagation();
@@ -133,12 +130,14 @@
 					});
 					//@TODO
 					if (o.pathClass !== sf.defaults.pathClass) {
-						console.warn('@TODO pathClass enabled')
-						$('li.'+o.pathClass,_).slice(0,o.pathLevels)
+						console.warn('@TODO pathClass enabled');
+						$('li.'+o.pathClass,_).slice(0,o.pathLevels);
 					}
 					o.onAfterInit.call(null,_);
-				})//End jQuery.each
-			},//END INIT METHOD
+				});
+				//End jQuery.each
+			},
+			//END INIT METHOD
 			close: function  (elem) {
 				//Handle API invoked method
 				if (typeof(elem) == "undefined") var elem = $(this);
@@ -154,7 +153,7 @@
 						data.uls.hide();
 						data.lis.removeClass(o.hoverClass);
 					}, o.speedOut);			
-				})
+				});
 			},
 			destroy: function  () {
 				return this.each( function  () {
@@ -164,16 +163,16 @@
 						data.target.removeClass(sf.c.menuClass);
 						data.uls.removeAttr('style');
 						if (o.autoArrows) {
-							$('li:has(ul)',data.target).removeClass(sf.c.anchorClass)
+							$('li:has(ul)',data.target).removeClass(sf.c.anchorClass);
 							$("."+sf.c.subClass,data.target).remove();
 						}
 						data.lis.undelegate('a','mouseenter mouseleave');
 						$(this).removeData('superfish');
 					} else {
-						if (typeof(console) !== "undefined") console.warn('Superfish not initialized on that dom element')
+						if (typeof(console) !== "undefined") console.warn('Superfish not initialized on that dom element');
 					}
-				})
-				
+				});
 			}
-	}//End Methods
+	};
+	//End Methods
 })(jQuery);
